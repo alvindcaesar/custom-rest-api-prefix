@@ -50,7 +50,7 @@ function cra_prefix_initialize_options() {
   );
 
   if( isset($_POST['permalink_structure']) && isset( $_POST['cra_prefix_setting'] ) ){
-    $cra_prefix = wp_unslash( $_POST['cra_prefix_setting'] );
+    $cra_prefix = wp_unslash( sanitize_text_field($_POST['cra_prefix_setting']) );
     update_option( 'cra_prefix_setting',  $cra_prefix );
   } 
 } // end cra_prefix_initialize_options
@@ -87,9 +87,25 @@ function cra_prefix_section_callback() {
 function cra_prefix_settings_callback($args) {
   $html  = '<code>'.site_url().'/</code> ';
   $html .= '<input type="text" autocomplete="off" class="regular-text" id="cra_prefix_setting" name="cra_prefix_setting" placeholder="Eg. api" value="'.get_option('cra_prefix_setting').'"/>';
-  $html .= '<p class="description"><label for="cra_prefix_setting"> '  . $args[0] . '</p>'; 
+  $html .= '<p class="description"><label for="cra_prefix_setting"> '  . $args[0] . '</p>';
+
+  $allowed_tags = array(
+    'code'  => array(),
+    'input' => array(
+      'autocomplete' => array(),
+      'class'        => array(),
+      'id'           => array(),
+      'name'         => array(),
+      'placeholder'  => array(),
+      'value'        => array()
+    ),
+    'p'     => array(
+      'class' => array()
+    ),
+    'label'  => array()
+  );
    
-  echo $html;
+  echo wp_kses($html, $allowed_tags);
 } // end cra_prefix_settings_callback
 
 add_filter('rest_url_prefix', function() {
