@@ -7,7 +7,7 @@
  * Author URI:      https://alvindcaesar.com
  * Text Domain:     custom-rest-api-prefix
  * Domain Path:     /languages
- * Version:         0.1.0
+ * Version:         1.0.1
  *
  * @package         Custom_Rest_Api_Prefix
  */
@@ -108,7 +108,10 @@ function cra_prefix_settings_callback($args) {
   echo wp_kses($html, $allowed_tags);
 } // end cra_prefix_settings_callback
 
-add_filter('rest_url_prefix', function() {
+
+add_filter('rest_url_prefix', 'cra_prefix_custom_rest');
+
+function cra_prefix_custom_rest() {
   $custom_prefix = !empty(get_option('cra_prefix_setting')) ? get_option('cra_prefix_setting') : 'wp-json';
   return $custom_prefix;
-});
+}
